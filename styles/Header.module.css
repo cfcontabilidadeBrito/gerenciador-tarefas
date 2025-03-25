@@ -1,0 +1,74 @@
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: black;
+  padding: 15px 30px;
+  color: white;
+  
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+}
+
+.logo img {
+  height: 40px;
+  width: auto;
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+}
+
+.authButtons {
+  display: flex;
+  gap: 15px;
+}
+
+.authButton {
+  background: transparent;
+  border: 1px solid white;
+  color: white;
+  padding: 8px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.3s ease; /* ← suaviza a animação */
+}
+
+.authButton:hover {
+  background: white;
+  color: black;
+  transform: scale(1.10); /* ← dilata levemente (5% maior) */
+}
+
+.userMenu {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.userName {
+  font-weight: bold;
+}
+
+.logoutButton {
+  background: red;
+  border: none;
+  color: white;
+  padding: 8px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.3s ease; /* ← suaviza a animação */
+}
+
+.logoutButton:hover {
+  transform: scale(1.10); /* ← dilata levemente (5% maior) */
+  background: darkred;
+}
+
+
