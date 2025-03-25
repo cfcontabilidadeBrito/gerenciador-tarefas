@@ -1,4 +1,4 @@
-import db from "../../../lib/db";
+import db from "../../lib/db";
 import jwt from "jsonwebtoken";
 
 const SECRET_KEY = process.env.JWT_SECRET || "segredo_super_secreto";
