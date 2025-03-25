@@ -131,9 +131,10 @@ export default function TaskList({ tasks, setTasks }) {
         <button onClick={handleAddTask}>Adicionar</button>
       </div>
 
-      <ul className={styles.taskList}>
-        {tasks.map((task) => (
-          <li key={task.id} className={styles.taskItem}>
+      <div className={styles.taskListWrapper}>
+  <ul className={styles.taskList}>
+    {tasks.map((task) => (
+      <li key={task.id} className={styles.taskItem}>
             {editingTaskId === task.id ? (
               <>
                 <input
@@ -171,9 +172,10 @@ export default function TaskList({ tasks, setTasks }) {
                 </button>
               </>
             )}
-          </li>
-        ))}
-      </ul>
+      </li>
+    ))}
+  </ul>
+</div>
     </div>
   );
 }

@@ -2,51 +2,68 @@ import db from '../../lib/db';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 
-const SECRET_KEY = process.env.JWT_SECRET || "segredo_super_secreto"; // defina no .env depois
+const SECRET_KEY = process.env.JWT_SECRET || 'segredo_super_secreto';
 
 export default function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Método não permitido.' });
   }
 
-  const { email, password, name, action } = req.body;
+  const { email, password, name, action, role } = req.body; // 👈 role agora incluso
 
+  // Log para depuração
+  console.log('📥 Requisição recebida:', req.body);
+
+  // Validação básica
   if (!email || !password) {
     return res.status(400).json({ error: 'Email e senha são obrigatórios.' });
   }
 
-  if (action === 'register') {
-    // Verificar se usuário já existe
-    db.query("SELECT * FROM users WHERE email = ?", [email], (err, result) => {
-      if (err) return res.status(500).json({ error: 'Erro no banco.' });
-      if (result.length > 0) return res.status(400).json({ error: 'Usuário já existe.' });
+  const cleanEmail = email.trim().toLowerCase();
 
-      // Criptografar senha
+  if (action === 'register') {
+    db.query('SELECT * FROM users WHERE email = ?', [cleanEmail], (err, result) => {
+      if (err) {
+        console.error('Erro ao verificar usuário existente:', err);
+        return res.status(500).json({ error: 'Erro no banco de dados.' });
+      }
+
+      if (result.length > 0) {
+        return res.status(400).json({ error: 'Usuário já cadastrado.' });
+      }
+
       const hashedPassword = bcrypt.hashSync(password, 10);
 
-      const insert = 'INSERT INTO users (name, email, password) VALUES (?, ?, ?)';
-      db.query(insert, [name || "Usuário", email, hashedPassword], (err, result) => {
-        if (err) return res.status(500).json({ error: 'Erro ao cadastrar usuário.' });
-        return res.status(201).json({ message: 'Usuário cadastrado com sucesso!' });
-      });
+      db.query(
+        'INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?)',
+        [name || 'Usuário', cleanEmail, hashedPassword, role || 'pessoal'], // 👈 define 'pessoal' como padrão
+        (err, result) => {
+          if (err) {
+            console.error('Erro ao cadastrar usuário:', err);
+            return res.status(500).json({ error: 'Erro ao cadastrar usuário.' });
+          }
+
+          return res.status(201).json({ message: 'Usuário cadastrado com sucesso!' });
+        }
+      );
     });
 
   } else if (action === 'login') {
-    // Buscar usuário
-    db.query("SELECT * FROM users WHERE email = ?", [email], (err, result) => {
+    db.query('SELECT * FROM users WHERE email = ?', [cleanEmail], (err, result) => {
       if (err || result.length === 0) {
+        console.error('Usuário não encontrado ou erro no banco:', err);
         return res.status(401).json({ error: 'Usuário não encontrado.' });
       }
 
       const user = result[0];
 
-      // Comparar senha
       const isMatch = bcrypt.compareSync(password, user.password);
-      if (!isMatch) return res.status(401).json({ error: 'Senha incorreta.' });
+      if (!isMatch) {
+        return res.status(401).json({ error: 'Senha incorreta.' });
+      }
 
-      // Gerar token
       const token = jwt.sign(
-        { id: user.id, name: user.name, email: user.email },
+        { id: user.id, name: user.name, email: user.email, role: user.role }, // 👈 role incluído
         SECRET_KEY,
         { expiresIn: '2h' }
       );
@@ -54,7 +71,12 @@ export default function handler(req, res) {
       return res.status(200).json({
         message: 'Login bem-sucedido!',
         token,
-        user: { id: user.id, name: user.name, email: user.email }
+        user: {
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          role: user.role, // 👈 retornando no frontend
+        },
       });
     });
 

@@ -13,7 +13,7 @@ export default function Login() {
   // Se já estiver logado, redireciona para a home
   useEffect(() => {
     if (localStorage.getItem("token")) {
-      router.push("/");
+      router.push("/dashboard");
     }
   }, []);
 
@@ -38,7 +38,7 @@ export default function Login() {
       if (res.ok) {
         localStorage.setItem("token", data.token);
         localStorage.setItem("user", JSON.stringify(data.user));
-        router.push("/");
+        router.push("/dashboard");
       } else {
         setError(data.error || "Erro ao fazer login");
       }

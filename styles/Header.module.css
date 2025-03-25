@@ -8,6 +8,7 @@
   
 }
 
+
 .logo {
   display: flex;
   align-items: center;
@@ -70,5 +71,3 @@
   transform: scale(1.10); /* ← dilata levemente (5% maior) */
   background: darkred;
 }
-
-

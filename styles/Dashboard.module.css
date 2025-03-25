@@ -1,0 +1,22 @@
+/* styles/Dashboard.module.css */
+.dashboardContainer {
+    padding: 20px;
+    margin-left: 200px; /* espaço reservado para a Sidebar */
+  }
+  
+  .title {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 24px;
+    font-weight: bold;
+  }
+  
+  .taskArea {
+    display: flex;
+    gap: 40px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  
+  
